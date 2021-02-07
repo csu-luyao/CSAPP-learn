@@ -1,0 +1,90 @@
+#/* $begin ncopy-ys */
+##################################################################
+# ncopy.ys - Copy a src block of len words to dst.
+# Return the number of positive words (>0) contained in src.
+#
+# Include your name and ID here.
+#
+# Describe how and why you modified the baseline code.
+#
+##################################################################
+# Do not modify this portion
+# Function prologue.
+# %rdi = src, %rsi = dst, %rdx = len
+ncopy:
+##################################################################
+# You can modify this portion
+	# Loop header
+Loop:
+	iaddq $-4,%rdx		# len <= 0?
+	jl DoneLoop		# if so, goto Done:
+pos0:	
+	mrmovq (%rdi),%r10
+	rmmovq %r10,(%rsi)
+	andq %r10,%r10
+	mrmovq 8(%rdi),%r11
+	jle pos1
+	iaddq $1,%rax
+pos1:
+	rmmovq %r11,8(%rsi)
+	andq %r11,%r11
+	mrmovq 16(%rdi),%r10
+	jle pos2
+	iaddq $1,%rax
+pos2:
+	rmmovq %r10,16(%rsi)
+	andq %r10,%r10
+	mrmovq 24(%rdi),%r11
+	jle pos3
+	iaddq $1,%rax
+pos3:
+	rmmovq %r11,24(%rsi)
+	iaddq $32,%rdi
+	iaddq $32,%rsi
+	andq %r11,%r11
+	jle Loop
+	iaddq $1,%rax
+	jmp Loop
+##################################################################
+# Do not modify the following section of code
+# Function epilogue.
+DoneLoop:
+	iaddq $4,%rdx
+pos4:	
+	iaddq $-1,%rdx
+	mrmovq (%rdi),%r10
+	jl Done
+	rmmovq %r10,(%rsi)
+	andq %r10,%r10
+	jle pos5
+	iaddq $1,%rax
+pos5:
+	iaddq $-1,%rdx
+	mrmovq 8(%rdi),%r10
+	jl Done
+	rmmovq %r10,8(%rsi)
+	andq %r10,%r10
+	jle pos6
+	iaddq $1,%rax
+pos6:
+	iaddq $-1,%rdx
+	mrmovq 16(%rdi),%r10
+	jl Done
+	rmmovq %r10,16(%rsi)
+	andq %r10,%r10
+	jle pos7
+	iaddq $1,%rax
+pos7:
+	iaddq $-1,%rdx
+	mrmovq 24(%rdi),%r10
+	jl Done
+	rmmovq %r10,24(%rsi)
+	andq %r10,%r10
+	jle Done
+	iaddq $1,%rax
+Done:
+	ret
+##################################################################
+# Keep the following label at the end of your function
+End:
+#/* $end ncopy-ys */

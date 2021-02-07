@@ -1,0 +1,147 @@
+                            | #######################################################################
+                            | # Test for copying block of size 4;
+                            | #######################################################################
+0x000:                      | 	.pos 0
+0x000: 30f4e002000000000000 | main:	irmovq Stack, %rsp  	# Set up stack pointer
+                            | 
+                            | 	# Set up arguments for copy function and then invoke it
+0x00a: 30f20400000000000000 | 	irmovq $4, %rdx		# src and dst have 4 elements
+0x014: 30f63802000000000000 | 	irmovq dest, %rsi	# dst array
+0x01e: 30f70802000000000000 | 	irmovq src, %rdi	# src array
+0x028: 803200000000000000   | 	call ncopy		 
+0x031: 00                   | 	halt			# should halt with num nonzeros in %rax
+0x032:                      | StartFun:
+                            | #/* $begin ncopy-ys */
+                            | ##################################################################
+                            | # ncopy.ys - Copy a src block of len words to dst.
+                            | # Return the number of positive words (>0) contained in src.
+                            | #
+                            | # Include your name and ID here.
+                            | #
+                            | # Describe how and why you modified the baseline code.
+                            | #
+                            | ##################################################################
+                            | # Do not modify this portion
+                            | # Function prologue.
+                            | # %rdi = src, %rsi = dst, %rdx = len
+0x032:                      | ncopy:
+                            | ##################################################################
+                            | # You can modify this portion
+                            | 	# Loop header
+0x032:                      | Loop:
+0x032: c0f2fcffffffffffffff | 	iaddq $-4,%rdx		# len <= 0?
+0x03c: 720601000000000000   | 	jl DoneLoop		# if so, goto Done:
+0x045:                      | pos0:	
+0x045: 50a70000000000000000 | 	mrmovq (%rdi),%r10
+0x04f: 40a60000000000000000 | 	rmmovq %r10,(%rsi)
+0x059: 62aa                 | 	andq %r10,%r10
+0x05b: 50b70800000000000000 | 	mrmovq 8(%rdi),%r11
+0x065: 717800000000000000   | 	jle pos1
+0x06e: c0f00100000000000000 | 	iaddq $1,%rax
+0x078:                      | pos1:
+0x078: 40b60800000000000000 | 	rmmovq %r11,8(%rsi)
+0x082: 62bb                 | 	andq %r11,%r11
+0x084: 50a71000000000000000 | 	mrmovq 16(%rdi),%r10
+0x08e: 71a100000000000000   | 	jle pos2
+0x097: c0f00100000000000000 | 	iaddq $1,%rax
+0x0a1:                      | pos2:
+0x0a1: 40a61000000000000000 | 	rmmovq %r10,16(%rsi)
+0x0ab: 62aa                 | 	andq %r10,%r10
+0x0ad: 50b71800000000000000 | 	mrmovq 24(%rdi),%r11
+0x0b7: 71ca00000000000000   | 	jle pos3
+0x0c0: c0f00100000000000000 | 	iaddq $1,%rax
+0x0ca:                      | pos3:
+0x0ca: 40b61800000000000000 | 	rmmovq %r11,24(%rsi)
+0x0d4: c0f72000000000000000 | 	iaddq $32,%rdi
+0x0de: c0f62000000000000000 | 	iaddq $32,%rsi
+0x0e8: 62bb                 | 	andq %r11,%r11
+0x0ea: 713200000000000000   | 	jle Loop
+0x0f3: c0f00100000000000000 | 	iaddq $1,%rax
+0x0fd: 703200000000000000   | 	jmp Loop
+                            | ##################################################################
+                            | # Do not modify the following section of code
+                            | # Function epilogue.
+0x106:                      | DoneLoop:
+0x106: c0f20400000000000000 | 	iaddq $4,%rdx
+0x110:                      | pos4:	
+0x110: c0f2ffffffffffffffff | 	iaddq $-1,%rdx
+0x11a: 50a70000000000000000 | 	mrmovq (%rdi),%r10
+0x124: 720002000000000000   | 	jl Done
+0x12d: 40a60000000000000000 | 	rmmovq %r10,(%rsi)
+0x137: 62aa                 | 	andq %r10,%r10
+0x139: 714c01000000000000   | 	jle pos5
+0x142: c0f00100000000000000 | 	iaddq $1,%rax
+0x14c:                      | pos5:
+0x14c: c0f2ffffffffffffffff | 	iaddq $-1,%rdx
+0x156: 50a70800000000000000 | 	mrmovq 8(%rdi),%r10
+0x160: 720002000000000000   | 	jl Done
+0x169: 40a60800000000000000 | 	rmmovq %r10,8(%rsi)
+0x173: 62aa                 | 	andq %r10,%r10
+0x175: 718801000000000000   | 	jle pos6
+0x17e: c0f00100000000000000 | 	iaddq $1,%rax
+0x188:                      | pos6:
+0x188: c0f2ffffffffffffffff | 	iaddq $-1,%rdx
+0x192: 50a71000000000000000 | 	mrmovq 16(%rdi),%r10
+0x19c: 720002000000000000   | 	jl Done
+0x1a5: 40a61000000000000000 | 	rmmovq %r10,16(%rsi)
+0x1af: 62aa                 | 	andq %r10,%r10
+0x1b1: 71c401000000000000   | 	jle pos7
+0x1ba: c0f00100000000000000 | 	iaddq $1,%rax
+0x1c4:                      | pos7:
+0x1c4: c0f2ffffffffffffffff | 	iaddq $-1,%rdx
+0x1ce: 50a71800000000000000 | 	mrmovq 24(%rdi),%r10
+0x1d8: 720002000000000000   | 	jl Done
+0x1e1: 40a61800000000000000 | 	rmmovq %r10,24(%rsi)
+0x1eb: 62aa                 | 	andq %r10,%r10
+0x1ed: 710002000000000000   | 	jle Done
+0x1f6: c0f00100000000000000 | 	iaddq $1,%rax
+0x200:                      | Done:
+0x200: 90                   | 	ret
+                            | ##################################################################
+                            | # Keep the following label at the end of your function
+0x201:                      | End:
+                            | #/* $end ncopy-ys */
+0x201:                      | EndFun:
+                            | 
+                            | ###############################
+                            | # Source and destination blocks 
+                            | ###############################
+0x208:                      | 	.align 8
+0x208:                      | src:
+0x208: ffffffffffffffff     | 	.quad -1
+0x210: feffffffffffffff     | 	.quad -2
+0x218: 0300000000000000     | 	.quad 3
+0x220: 0400000000000000     | 	.quad 4
+0x228: fadebc0000000000     | 	.quad 0xbcdefa # This shouldn't get moved
+                            | 
+0x230:                      | 	.align 16
+0x230:                      | Predest:
+0x230: fadebc0000000000     | 	.quad 0xbcdefa
+0x238:                      | dest:
+0x238: abefcd0000000000     | 	.quad 0xcdefab
+0x240: abefcd0000000000     | 	.quad 0xcdefab
+0x248: abefcd0000000000     | 	.quad 0xcdefab
+0x250: abefcd0000000000     | 	.quad 0xcdefab
+0x258:                      | Postdest:
+0x258: bcfade0000000000     | 	.quad 0xdefabc
+                            | 
+0x260:                      | .align 8
+                            | # Run time stack
+0x260: 0000000000000000     | 	.quad 0
+0x268: 0000000000000000     | 	.quad 0
+0x270: 0000000000000000     | 	.quad 0
+0x278: 0000000000000000     | 	.quad 0
+0x280: 0000000000000000     | 	.quad 0
+0x288: 0000000000000000     | 	.quad 0
+0x290: 0000000000000000     | 	.quad 0
+0x298: 0000000000000000     | 	.quad 0
+0x2a0: 0000000000000000     | 	.quad 0
+0x2a8: 0000000000000000     | 	.quad 0
+0x2b0: 0000000000000000     | 	.quad 0
+0x2b8: 0000000000000000     | 	.quad 0
+0x2c0: 0000000000000000     | 	.quad 0
+0x2c8: 0000000000000000     | 	.quad 0
+0x2d0: 0000000000000000     | 	.quad 0
+0x2d8: 0000000000000000     | 	.quad 0
+                            | 
+0x2e0:                      | Stack:
