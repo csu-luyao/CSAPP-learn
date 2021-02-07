@@ -1,0 +1,14 @@
+Welcome to my fiendish little bomb. You have 6 phases with
+which to blow yourself up. Have a nice day!
+Border relations with Canada have never been better.
+Phase 1 defused. How about the next one?
+1 2 4 8 16 32
+That's number 2.  Keep going!
+0 207
+Halfway there!
+4294967303 0
+So you got that one.  Try this one.
+9?>567
+Good work!  On to the next...
+4 3 2 1 6 5
+Congratulations! You've defused the bomb!
